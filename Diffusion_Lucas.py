@@ -1,26 +1,26 @@
 # MEC8211 - Devoir 1
 # Bradley, James et Lucas
 
-# Ce code vise a calculer l'equation de diffusion en regime transitoire
+# Ce code vise à calculer l'équation de diffusion en régime transitoire
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-# D�finition des variables
+# Définition des variables
 R = 0.5         # Rayon du cylindre
 Deff = 1e-10    # Coefficient de diffusion
 S = 8e-9        # Consommation
-Ce = 12         # Concentration � r = R
+Ce = 12         # Concentration à r = R
 steps = 10000   # Nombre de pas de temps
 dt = 1e6        # Pas de temps
 print("dt =", dt)
 print()
 
-# D�finition du maillage
-nombre = input("Choisissez le nombre de noeuds (essayez 20): ")
-N = int(nombre) # Nombre de noeuds
-h = R/(N-1)     # Pas du sch�ma
-r = np.linspace(0, R, N)    # Discr�tisation du domaine
+# Définition du maillage
+nombre = input("Choisissez le nombre de nœuds (essayez 20): ")
+N = int(nombre) # Nombre de nœuds
+h = R/(N-1)     # Pas du schéma
+r = np.linspace(0, R, N)    # Discrétisation du domaine
 
 # Solution analytique
 sol_anly = []
@@ -29,12 +29,12 @@ for i in range(N):
     sol_anly.append(0.25*(S/Deff)*(R**2)*((r[i]/R)**2 - 1) + Ce)
 
 
-# Fonction pour resoudre le systeme lineaire
+# Fonction pour résoudre le système linéaire
 def solve_diffusion_cylindrical(r, h, N, Deff, S, Ce, step, dt):
     # Construction des matrices (A*c = b)
     A = []
     b = []
-    C = [0 for i in range(N)]   # Concentration � t = 0
+    C = [0 for i in range(N)]   # Concentration à t = 0
     
     for _ in range(step):
         for i in range(N):
@@ -80,7 +80,7 @@ def solve_diffusion_cylindrical(r, h, N, Deff, S, Ce, step, dt):
     
     return C
 
-# Resoudre l'equation de diffusion
+# Résoudre l'équation de diffusion
 C = solve_diffusion_cylindrical(r, h, N, Deff, S, Ce, steps, dt)
 
 print()
@@ -89,5 +89,5 @@ print("C =", C)
 # Plot the result
 plt.plot(r, C)
 plt.xlabel('r (m)')
-plt.ylabel('Concentration (mol/m�)')
+plt.ylabel('Concentration (mol/m³)')
 plt.show()
