@@ -2,10 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import stationnaire as st
 from math import *
-import erreur as e
-
-
-
+import graphique_de_convergence as g
 
 char = input("voulez-vous avoir la reponse directement en regime stationnaire? Y/N: ")   
 if char == "Y":
@@ -22,7 +19,9 @@ if char == "Y":
         plt.show()
 
     #-------------------------------------------Erreur----------------------------------------------------
-     
+        
+        g.graphes(rep)
+
     #------------------------------------------------------------------------------------------
 
     else:
@@ -33,13 +32,13 @@ if char == "Y":
         r,C,ref = st.stationnaire_shema_2(nombre_de_noeuds)
         fig,axe = plt.subplots()
         axe.plot(r,C)
-        #axe.plot(r,ref)
         plt.show()
 
     #erreurs--------------------------------------------------------------------------------------------------
-
         
-#-----------------------------------------codes pour l'etat transitoire--------------------------------------------------------------------------- 
+        g.graphes(rep)
+        
+    #---------------------------------------codes pour l'etat transitoire--------------------------------------------------------------------------- 
 else:   
     rep = input("schema_1 (1) ou schema_2 (2) : ")
     if rep == "1":
