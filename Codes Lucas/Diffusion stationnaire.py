@@ -139,8 +139,8 @@ for N in noeuds:
         sol_anly.append(0.25*(S/Deff)*(R**2)*((r[i]/R)**2 - 1) + Ce)
     
     # Choisissez l'une des méthodes pour calculer la concentration
-    # C = solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce)
-    C = solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce)
+    C = solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce)
+    # C = solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce)
 
     print()
     print("C =", C)
