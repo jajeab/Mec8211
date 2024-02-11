@@ -108,6 +108,11 @@ def transit_shema_1(nombre_de_noeuds):
     matrix = []
     b = []
     C=[0 for i in range(nombre_de_noeuds)]
+    ref = []
+
+    for i in range(nombre_de_noeuds):
+        ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
+
     t= 0
     t_station = 20000000000
     #t_station = 2000000
@@ -155,7 +160,7 @@ def transit_shema_1(nombre_de_noeuds):
         t= t + delta_t
         b = []
 
-    return r,C
+    return r,C,ref
 
 #------------------------------Schema 2--------------------------------------------------------------
 
@@ -166,6 +171,11 @@ def transit_shema_2(nombre_de_noeuds):
     matrix = []
     b = []
     C=[0 for i in range(nombre_de_noeuds)]
+    ref = []
+
+    for i in range(nombre_de_noeuds):
+        ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
+
     t= 0
     t_station = 20000000000
     #t_station = 2000000
@@ -215,4 +225,4 @@ def transit_shema_2(nombre_de_noeuds):
         t= t + delta_t
         b = []
 
-    return r,C
+    return r,C,ref
