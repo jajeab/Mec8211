@@ -12,103 +12,98 @@ R = 0.5         # Rayon du cylindre
 Deff = 1e-10    # Coefficient de diffusion
 S = 8e-9        # Consommation
 Ce = 12         # Concentration à r = R
+steps = 10000   # Nombre de pas de temps
+dt = 1e6        # Pas de temps
+print("dt =", dt)
+print()
 
 # Fonction pour résoudre le système linéaire : approximation avant de la dérivée
-def solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce):
-    # Construction des matrices (A*c = b)
-    A = []
-    b = []
-    
-    for i in range(N):
-        vecteur = []
-        if i == 0:
-            for j in range(N):
-                if j == 0:
-                    vecteur.append(-3)
-                elif j == 1:
-                    vecteur.append(4)
-                elif j == 2:
-                    vecteur.append(-1)
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(0)
-        elif i == N-1:
-            for j in range(N):
-                if j == N-1:
-                    vecteur.append(-Deff*(2 + h/r[i]))
-                elif j == N-2:
-                    vecteur.append(Deff)
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(S*h**2 - Deff*(1 + h/r[i])*Ce)
-        else:
-            for j in range(N):
-                if j == i-1:
-                    vecteur.append(Deff)
-                elif j == i:
-                    vecteur.append(-Deff*(2 + h/r[i]))
-                elif j == i+1:
-                    vecteur.append(Deff*(1 + h/r[i]))
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(S*h**2)
-
-    C = np.linalg.solve(A,b)
-    A = []
-    b = []
-    
-    return C
-
-# Fonction pour résoudre le système linéaire : approximation centrée de la dérivée
-def solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce):
+def solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce, step, dt):
     # Construction des matrices (A*c = b)
     A = []
     b = []
     C = [0 for i in range(N)]   # Concentration à t = 0
     
-    for i in range(N):
-        vecteur = []
-        if i == 0:
-            for j in range(N):
-                if j == 0:
-                    vecteur.append(-3)
-                elif j == 1:
-                    vecteur.append(4)
-                elif j == 2:
-                    vecteur.append(-1)
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(0)
-        elif i == N-1:
-            for j in range(N):
-                if j == N-1:
-                    vecteur.append(-2*Deff)
-                elif j == N-2:
-                    vecteur.append(Deff*(1 - h/(2*r[i])))
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(S*h**2 - Deff*(1 + h/(2*r[i]))*Ce)
-        else:
-            for j in range(N):
-                if j == i-1:
-                    vecteur.append(Deff*(1 - h/(2*r[i])))
-                elif j == i:
-                    vecteur.append(-2*Deff)
-                elif j == i+1:
-                    vecteur.append(Deff*(1 + h/(2*r[i])))
-                else:
-                    vecteur.append(0)
-            A.append(vecteur)
-            b.append(S*h**2)
+    for _ in range(step):
+        for i in range(N):
+            vecteur = []
+            if i == 0:
+                for j in range(N):
+                    if j == 0:
+                        vecteur.append(-3)
+                    elif j == 1:
+                        vecteur.append(4)
+                    elif j == 2:
+                        vecteur.append(-1)
+                    else:
+                        vecteur.append(0)
+                A.append(vecteur)
+                b.append(0)
+            elif i == N-1:
+                vecteur = [1 if j == N-1 else 0 for j in range(N)]
+                A.append(vecteur)
+                b.append(Ce)
+            else:
+                for j in range(N):
+                    if j == i-1:
+                        vecteur.append(-Deff*dt)
+                    elif j == i:
+                        vecteur.append(h**2 + Deff*dt*(2 + h/r[i]))
+                    elif j == i+1:
+                        vecteur.append(-Deff*dt*(1 + h/r[i]))
+                    else:
+                        vecteur.append(0)
+                A.append(vecteur)
+                b.append(C[i]*h**2 - S*dt*h**2)
+    
+        C = np.linalg.solve(A,b)
+        A = []
+        b = []
+    
+    return C
 
-    C = np.linalg.solve(A,b)
+# Fonction pour résoudre le système linéaire : approximation centrée de la dérivée
+def solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce, step, dt):
+    # Construction des matrices (A*c = b)
     A = []
     b = []
+    C = [0 for i in range(N)]   # Concentration à t = 0
+    
+    for _ in range(step):
+        for i in range(N):
+            vecteur = []
+            if i == 0:
+                for j in range(N):
+                    if j == 0:
+                        vecteur.append(-3)
+                    elif j == 1:
+                        vecteur.append(4)
+                    elif j == 2:
+                        vecteur.append(-1)
+                    else:
+                        vecteur.append(0)
+                A.append(vecteur)
+                b.append(0)
+            elif i == N-1:
+                vecteur = [1 if j == N-1 else 0 for j in range(N)]
+                A.append(vecteur)
+                b.append(Ce)
+            else:
+                for j in range(N):
+                    if j == i-1:
+                        vecteur.append(-Deff*dt*(1 - h/(2*r[i])))
+                    elif j == i:
+                        vecteur.append(2*Deff*dt + h**2)
+                    elif j == i+1:
+                        vecteur.append(-Deff*dt*(1 + h/(2*r[i])))
+                    else:
+                        vecteur.append(0)
+                A.append(vecteur)
+                b.append(C[i]*h**2 - S*dt*h**2)
+    
+        C = np.linalg.solve(A,b)
+        A = []
+        b = []
     
     return C
 
@@ -123,7 +118,7 @@ all_l2 = []
 all_l_inf = []
 
 # Définition du maillage
-noeuds = [5, 10, 20, 50, 100, 1000]
+noeuds = [5, 10, 20, 50, 100]
 
 for N in noeuds:
     h = R/(N-1)     # Pas du schéma
@@ -139,8 +134,8 @@ for N in noeuds:
         sol_anly.append(0.25*(S/Deff)*(R**2)*((r[i]/R)**2 - 1) + Ce)
     
     # Choisissez l'une des méthodes pour calculer la concentration
-    # C = solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce)
-    C = solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce)
+    C = solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce, steps, dt)
+    # C = solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce, steps, dt)
 
     print()
     print("C =", C)
@@ -188,12 +183,6 @@ plt.gca().spines['top'].set_linewidth(2)
 # Marques de coche plus longues
 plt.tick_params(width=2, length=6)
 
-# Titre
-# plt.title('Profil de concentration\n Approximation avant de la dérivée 1ère',
-#           fontsize=14, fontweight='bold', y=1.02)
-plt.title('Profil de concentration\n Approximation centrée de la dérivée 1ère',
-          fontsize=14, fontweight='bold', y=1.02)
-
 plt.xlabel('r (m)', fontsize=12, fontweight='bold')
 plt.ylabel('Concentration (mol/m³)', fontsize=12, fontweight='bold')
 plt.xlim(0, 0.5)
@@ -231,13 +220,7 @@ plt.tick_params(width=2, which='both', direction='in', top=True, right=True, len
 
 # Afficher l'équation de la régression en loi de puissance
 equation_text = f'$L_2 = {np.exp(coefficients[1]):.4f} \\times Δr^{{{exponent:.4f}}}$'
-equation_text_obj = plt.text(0.4, 0.2, equation_text, fontsize=12, transform=plt.gca().transAxes, color='k')
-
-# Titre
-# plt.title('Normes des erreurs\n Approximation avant de la dérivée 1ère',
-#           fontsize=14, fontweight='bold', y=1.02)
-plt.title('Normes des erreurs\n Approximation centrée de la dérivée 1ère',
-          fontsize=14, fontweight='bold', y=1.02)
+equation_text_obj = plt.text(0.2, 0.2, equation_text, fontsize=12, transform=plt.gca().transAxes, color='k')
 
 plt.xlabel('h ou Δr (m)', fontsize=12, fontweight='bold')
 plt.ylabel('Erreur (mol/m³)', fontsize=12, fontweight='bold')

@@ -34,27 +34,21 @@ def solve_diffusion_cylindrical_forward(r, h, N, Deff, S, Ce):
             A.append(vecteur)
             b.append(0)
         elif i == N-1:
-            for j in range(N):
-                if j == N-1:
-                    vecteur.append(-Deff*(2 + h/r[i]))
-                elif j == N-2:
-                    vecteur.append(Deff)
-                else:
-                    vecteur.append(0)
+            vecteur = [1 if j == N-1 else 0 for j in range(N)]
             A.append(vecteur)
-            b.append(S*h**2 - Deff*(1 + h/r[i])*Ce)
+            b.append(Ce)
         else:
             for j in range(N):
                 if j == i-1:
-                    vecteur.append(Deff)
+                    vecteur.append(-Deff)
                 elif j == i:
-                    vecteur.append(-Deff*(2 + h/r[i]))
+                    vecteur.append(Deff*(2 + h/r[i]))
                 elif j == i+1:
-                    vecteur.append(Deff*(1 + h/r[i]))
+                    vecteur.append(-Deff*(1 + h/r[i]))
                 else:
                     vecteur.append(0)
             A.append(vecteur)
-            b.append(S*h**2)
+            b.append(-S*h**2)
 
     C = np.linalg.solve(A,b)
     A = []
@@ -67,7 +61,6 @@ def solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce):
     # Construction des matrices (A*c = b)
     A = []
     b = []
-    C = [0 for i in range(N)]   # Concentration à t = 0
     
     for i in range(N):
         vecteur = []
@@ -84,27 +77,21 @@ def solve_diffusion_cylindrical_central(r, h, N, Deff, S, Ce):
             A.append(vecteur)
             b.append(0)
         elif i == N-1:
-            for j in range(N):
-                if j == N-1:
-                    vecteur.append(-2*Deff)
-                elif j == N-2:
-                    vecteur.append(Deff*(1 - h/(2*r[i])))
-                else:
-                    vecteur.append(0)
+            vecteur = [1 if j == N-1 else 0 for j in range(N)]
             A.append(vecteur)
-            b.append(S*h**2 - Deff*(1 + h/(2*r[i]))*Ce)
+            b.append(Ce)
         else:
             for j in range(N):
                 if j == i-1:
-                    vecteur.append(Deff*(1 - h/(2*r[i])))
+                    vecteur.append(-Deff*(1 - h/(2*r[i])))
                 elif j == i:
-                    vecteur.append(-2*Deff)
+                    vecteur.append(2*Deff)
                 elif j == i+1:
-                    vecteur.append(Deff*(1 + h/(2*r[i])))
+                    vecteur.append(-Deff*(1 + h/(2*r[i])))
                 else:
                     vecteur.append(0)
             A.append(vecteur)
-            b.append(S*h**2)
+            b.append(-S*h**2)
 
     C = np.linalg.solve(A,b)
     A = []
