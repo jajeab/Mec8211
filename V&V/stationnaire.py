@@ -1,10 +1,19 @@
+# Module contenant les fonctions qui retournent les solutions analytique et
+# numerique soit directement en stationnaire ou en transitoire
+
 import numpy as np
 import matplotlib.pyplot as plt
-import copy
 
-R = 1/2
-Deff = 10**(-10)
-S = 8*10**(-9) 
+
+R = 1/2          # Rayon du pilier
+Deff = 10**(-10)  # coefficient de diffusion effectif du sel dans le béton poreux
+S = 8*10**(-9)    # terme source
+Ce = 12           # concentration en sel constante à la surface du pilier
+
+#----------------------------------schema_1-----------------------------------------------
+
+# Fonction qui retourne les solutions analytique et
+# numerique directement a partir d'un solveur stationnaire en schema 1
 
 def stationnaire_shema_1(nombre_de_noeuds):
 
@@ -14,10 +23,10 @@ def stationnaire_shema_1(nombre_de_noeuds):
     b = []
     C=[]
     ref = []
-
+    # solution analytique
     for i in range(nombre_de_noeuds):
         ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
-
+    # solution numerique
     for i in range(nombre_de_noeuds):
         sous_liste = []
         if i == 0:
@@ -54,6 +63,9 @@ def stationnaire_shema_1(nombre_de_noeuds):
 
 #----------------------------------schema_2-----------------------------------------------
 
+# Fonction qui retourne les solutions analytique et
+# numerique a partir d'un solveur stationnaire en schema 2
+
 def stationnaire_shema_2(nombre_de_noeuds):
     delta_r = R/(nombre_de_noeuds-1)
     r = np.linspace(0,0.5,nombre_de_noeuds)
@@ -61,10 +73,10 @@ def stationnaire_shema_2(nombre_de_noeuds):
     b = []
     C=[]
     ref = []
-
+    # Solution analytique
     for i in range(nombre_de_noeuds):
         ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
-
+    # Solution numerique
     for i in range(nombre_de_noeuds):
         sous_liste = []
         if i == 0:
@@ -99,8 +111,12 @@ def stationnaire_shema_2(nombre_de_noeuds):
     C = np.linalg.solve(matrix,b)
     return r,C,ref
 
-#------------------------------Fonction transitoire--------------------------------------------------------------
+#------------------------------Code transitoire--------------------------------------------------------------
 #------------------------------Schema 1--------------------------------------------------------------
+
+# Fonction qui retourne les solutions analytique et
+# numerique a partir d'un solveur transitoire en schema 1
+
 def transit_shema_1(nombre_de_noeuds):
 
     delta_r = R/(nombre_de_noeuds-1)
@@ -109,13 +125,12 @@ def transit_shema_1(nombre_de_noeuds):
     b = []
     C=[0 for i in range(nombre_de_noeuds)]
     ref = []
-
+    # Solution analytique
     for i in range(nombre_de_noeuds):
         ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
-
+    # Solution numerique
     t= 0
     t_station = 20000000000
-    #t_station = 2000000
     delta_t = 2000
     for i in range(nombre_de_noeuds):
             sous_liste = []
@@ -164,6 +179,9 @@ def transit_shema_1(nombre_de_noeuds):
 
 #------------------------------Schema 2--------------------------------------------------------------
 
+# Fonction qui retourne les solutions analytique et
+# numerique a partir d'un solveur transitoire en schema 2
+
 def transit_shema_2(nombre_de_noeuds):
 
     delta_r = R/(nombre_de_noeuds-1)
@@ -172,13 +190,12 @@ def transit_shema_2(nombre_de_noeuds):
     b = []
     C=[0 for i in range(nombre_de_noeuds)]
     ref = []
-
+    # Solution analytique
     for i in range(nombre_de_noeuds):
         ref.append(0.25*(S/Deff)*(R**2)*(((r[i]/R)**2)-1) + 12 )
-
+    # Solution numerique
     t= 0
     t_station = 20000000000
-    #t_station = 2000000
     delta_t = 2000
     for i in range(nombre_de_noeuds):
             sous_liste = []
