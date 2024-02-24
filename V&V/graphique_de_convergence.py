@@ -13,6 +13,7 @@ def generate_fake_data(char):
     L_1 = []
     L_2 = []
     L_inf = []
+    # Calcul des normes des erreurs L1,L2,L_∞
     for k in nombre:
         if char == "1":
             r,C,ref = st.stationnaire_shema_1(k)
@@ -32,7 +33,7 @@ def generate_fake_data(char):
         L_1.append(l_1)
         L_2.append(l_2)
         L_inf.append(max(l_inf))
-
+    # Calcul des ordres pour chaque type d'erreurs L1,L2,L_∞
     if char == "1":
         p_1 = log(max(L_1)/min(L_1))/log(max(h_values)/min(h_values))
         p_2 = log(max(L_2)/min(L_2))/log(max(h_values)/min(h_values))
@@ -67,7 +68,7 @@ def generate_fake_data(char):
             p_inf = log(min(k)/max(L_inf))/log(max(h_values)/min(h_values))
     
     
-    
+    # Calcul des erreurs en fonction de leur ordre respectif
     error_values_1 = 0.1 * h_values**p_1  # Erreur L2, convergence d'ordre 2
     error_values_2 = 0.1 * h_values**p_2 
     error_values_inf = 0.1 * h_values**p_inf 
@@ -80,8 +81,7 @@ def generate_fake_data(char):
     return h_values, error_values_1,error_values_2,error_values_inf
 
 
- 
-
+# Fonction tracant les graphes pour la convergence des erreurs
 def graphes(char):
     # Générer des données factices
     h_values, error_values_1, error_values_2, error_values_inf = generate_fake_data(char)
@@ -117,7 +117,7 @@ def graphes(char):
     #plt.scatter(h_values[-1], extrapolated_value, marker='x', color='g', label='Extrapolation')
 
     # Ajouter des étiquettes et un titre au graphique
-    plt.title(f'Convergence d\'ordre {exponent:.4f}~1\n des erreurs $L_1,L_2,L_∞ $ en fonction de $Δx$',
+    plt.title(f'Convergence d\'ordre {exponent:.4f} ~ {round(exponent)}\n des erreurs $L_1,L_2,L_∞ $ en fonction de $Δx$',
             fontsize=14, fontweight='bold', y=1.02)  # Le paramètre y règle la position verticale du titre
 
     plt.xlabel('Taille de maille $h_{max}$ ou $Δx$ (m)', fontsize=12, fontweight='bold')  # Remplacer "h" par "Δx"
