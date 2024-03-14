@@ -22,7 +22,7 @@ function [r, C, ref] = transit_shema_2(nbr, R, Deff, Ce,S)
     matrix(1,3) = -1;
     for i = 2:nbr-1
         matrix(i, i-1) = delta_t * delta_r * Deff / (2 * r(i)) - delta_t * Deff;
-        matrix(i, i) = delta_r^2 + 2 * delta_t * Deff;
+        matrix(i, i) = delta_r^2 + 2 * delta_t * Deff + K*delta_t*delta_r^2;
         matrix(i, i+1) = -(delta_t * Deff + delta_t * delta_r * Deff / (2 * r(i)));
         enddelta_r
     matrix(nbr, nbr) = 1;
