@@ -5,7 +5,7 @@
 %% and it thus requires an in-deepth knowledge of the LBM to understand it.
 
 function [permeabilite]=LBM(filename,NX,deltaP,dx,d_equivalent)
-%close all;
+% close all;
 NY=NX; % square domain
 OMEGA=1.0; % one over relaxation time
 rho0=1.0; % density of air
@@ -45,21 +45,14 @@ while (abs(FlowRate_old-FlowRate)/FlowRate)>=epsilon
     N(SOLID,:)=N_SOLID;
     t_=t_+1;
 end
-% u = (ux.^2 + uy.^2).^(0.5);
-% U = mean(u);
-% disp(U);
 
 % Write permeability at the screen, effective porosity and Reynolds number
 poro_eff=1-sum(SOLID)/(NX*NY)
-Re=rho0*mean(ux(1:NX))*poro_eff*d_equivalent*1e-6/(mu*(1-poro_eff));
-permeabilite =mean(ux(1:NX))*mu/deltaP*(NX*dx)*1e12 ;%in micron^2  k_in_micron2
+Re=rho0*mean(ux(1:NX))*poro_eff*d_equivalent*1e-6/(mu*(1-poro_eff))
+permeabilite =mean(ux(1:NX))*mu/deltaP*(NX*dx)*1e12 %in micron^2 k_in_micron2
 
-% Vector plot of the flow field 
+% % Vector plot of the flow field 
 % ux(SOLID)=0; uy(SOLID)=0;ux=reshape(ux,NX,NY)';uy=reshape(uy,NX,NY)';
 % figure(2);clf;hold on;colormap(gray(2));image(2-reshape(SOLID,NX,NY)');
 % quiver(1:NX,1:NY,ux,uy,1.5,'b');axis([0.5 NX+0.5 0.5 NY+0.5]);axis image;
 % title(['Velocity field after ',num2str(t_),' time steps']);
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
